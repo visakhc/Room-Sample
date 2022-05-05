@@ -25,7 +25,7 @@ class addFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add, container, false)
-        mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        mUserViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         view.btSave.setOnClickListener {
             insertToDB()
         }
@@ -41,12 +41,13 @@ class addFragment : Fragment() {
 
         mUserViewModel.addUser(user)
         Toast.makeText(requireContext(), "Added Succesfully !!", Toast.LENGTH_SHORT).show()
+
         sendVibrations(200)
         findNavController().navigate(R.id.action_addFragment_to_listFragment)
     }
 
     private fun Fragment.sendVibrations(duration: Long) {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+        vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.EFFECT_CLICK))
     }
 }

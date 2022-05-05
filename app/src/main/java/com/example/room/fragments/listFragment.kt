@@ -1,6 +1,9 @@
 package com.example.room.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +17,7 @@ import com.example.room.UserViewModel
 import com.example.room.adapter.UserAdapter
 import kotlinx.android.synthetic.main.fragment_list.view.*
 
-class listFragment : Fragment() {
+class listFragment : Fragment(), UserAdapter.ClickListener {
     private lateinit var mUserViewModel: UserViewModel
     private var userAdapter: UserAdapter? = null
 
@@ -22,21 +25,34 @@ class listFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         view.fab.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
         }
         mUserViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        userAdapter = UserAdapter()
+        userAdapter = UserAdapter(this)
+
         view.recyclerList.apply {
             adapter = userAdapter
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
+
         mUserViewModel.readAllData.observe(viewLifecycleOwner, Observer { data ->
             userAdapter?.updateData(data)
         })
 
         return view
+    }
+
+    override fun onClick(id: Int) {
+        mUserViewModel.deleteUser(id)
+        sendVibrations(100)
+    }
+
+    private fun Fragment.sendVibrations(duration: Long) {
+        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 }

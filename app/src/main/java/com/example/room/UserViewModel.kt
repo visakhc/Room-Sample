@@ -23,4 +23,16 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             repository.addUser(user)
         }
     }
+
+    fun deleteUser(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteUser(id)
+        }
+    }
+
+    fun searchUser(searchText: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.searchUser(searchText)
+        }
+    }
 }

@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.room.User
 import com.example.room.databinding.ItemUserBinding
 
-class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(private val listener: ClickListener) :
+    RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     private var itemList = mutableListOf<User>()
 
     inner class UserViewHolder(val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root)
@@ -28,6 +29,9 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
             holder.binding.tvAge.text = age
             holder.binding.tvId.text = id.toString()
             holder.binding.tvName.text = "${firstName.trim()} ${lastName.trim()}"
+            holder.binding.root.setOnClickListener {
+                listener.onClick(id)
+            }
         }
     }
 
@@ -39,5 +43,9 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
         this.itemList.clear()
         this.itemList.addAll(itemList)
         notifyDataSetChanged()
+    }
+
+    interface ClickListener {
+        fun onClick(id: Int)
     }
 }
