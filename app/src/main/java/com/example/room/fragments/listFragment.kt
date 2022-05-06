@@ -4,9 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -43,7 +45,36 @@ class listFragment : Fragment(), UserAdapter.ClickListener {
             userAdapter?.updateData(data)
         })
 
+        view.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    getDataFromDb(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    getDataFromDb(newText)
+                }
+                return true
+            }
+        })
+
         return view
+    }
+
+    private fun getDataFromDb(searchText: String) {
+        var searchText = searchText
+        searchText = "%$searchText%"
+
+        mUserViewModel.searchUser(searchText = searchText)?.observe(viewLifecycleOwner) { list ->
+            list?.let {
+                Log.e("List = ", list.toString())
+            }
+
+        }
+
     }
 
     override fun onClick(id: Int) {

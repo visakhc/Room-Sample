@@ -1,5 +1,8 @@
 package com.example.room
 
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+
 class UserRepository(private val userDao: UserDao) {
 
     val readAllData = userDao.readAllData()
@@ -12,7 +15,8 @@ class UserRepository(private val userDao: UserDao) {
         userDao.deleteUser(id)
     }
 
-    suspend fun searchUser(searchText: String) {
-        userDao.searchUser(searchText)
+    @WorkerThread
+    suspend fun searchUser(searchText: String): LiveData<List<User>> {
+        return userDao.searchUser(searchText)
     }
 }

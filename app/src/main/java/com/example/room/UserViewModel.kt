@@ -30,9 +30,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun searchUser(searchText: String) {
+    fun searchUser(searchText: String): LiveData<List<User>>? {
+        var s: LiveData<List<User>>? = null
         viewModelScope.launch(Dispatchers.IO) {
-            repository.searchUser(searchText)
+            s = repository.searchUser(searchText)
         }
+        return s
     }
 }
